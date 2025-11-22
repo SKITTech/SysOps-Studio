@@ -21,7 +21,7 @@ export const BridgeConfigForm = () => {
     interfaces: "",
     gateway: "",
     dns: "",
-    os: "centos-7",
+    os: "ubuntu-18.04-hetzner",
     enableIPv6: false,
     ipv6Address: "",
     ipv6Gateway: "",

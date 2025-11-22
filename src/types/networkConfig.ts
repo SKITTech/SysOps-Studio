@@ -2,7 +2,8 @@ export type OSType =
   | "centos-7"
   | "almalinux"
   | "ubuntu-16.04"
-  | "ubuntu-18.04";
+  | "ubuntu-18.04-hetzner"
+  | "ubuntu-18.04-other";
 
 export type BondMode = "mode-1" | "mode-4";
 
@@ -70,5 +71,6 @@ export const OS_OPTIONS = [
   { value: "centos-7" as OSType, label: "CentOS 7 (Without NetworkManager)" },
   { value: "almalinux" as OSType, label: "AlmaLinux 8.x and above" },
   { value: "ubuntu-16.04" as OSType, label: "Ubuntu 16.04" },
-  { value: "ubuntu-18.04" as OSType, label: "Ubuntu 18.04 and higher" },
+  { value: "ubuntu-18.04-hetzner" as OSType, label: "Ubuntu 18.04 and higher (Hetzner)" },
+  { value: "ubuntu-18.04-other" as OSType, label: "Ubuntu 18.04 and higher (Other Providers)" },
 ];
