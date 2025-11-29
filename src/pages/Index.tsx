@@ -1,5 +1,5 @@
 import { BridgeConfigForm } from "@/components/BridgeConfigForm";
-import { Network, Info, Activity, Wifi, Globe, Shield, FileText, ShieldAlert } from "lucide-react";
+import { Network, Info, Activity, Wifi, Globe, Shield, FileText, ShieldAlert, Terminal } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { ToolNav } from "@/components/ToolNav";
 
@@ -32,6 +32,7 @@ const Index = () => {
               { to: "/firewall-generator", icon: Shield, label: "Firewall Generator" },
               { to: "/log-analyzer", icon: FileText, label: "Log Analyzer" },
               { to: "/security-audit", icon: ShieldAlert, label: "Security Audit" },
+              { to: "/command-library", icon: Terminal, label: "Command Library" },
             ]}
           />
         </div>

@@ -10,6 +10,7 @@ import IPv6Converter from "./pages/IPv6Converter";
 import FirewallGenerator from "./pages/FirewallGenerator";
 import LogAnalyzer from "./pages/LogAnalyzer";
 import SecurityAudit from "./pages/SecurityAudit";
+import CommandLibrary from "./pages/CommandLibrary";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/firewall-generator" element={<FirewallGenerator />} />
           <Route path="/log-analyzer" element={<LogAnalyzer />} />
           <Route path="/security-audit" element={<SecurityAudit />} />
+          <Route path="/command-library" element={<CommandLibrary />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
