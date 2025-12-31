@@ -303,29 +303,31 @@ export const BridgeConfigForm = () => {
               <p className="text-xs text-muted-foreground mt-1">Name for the bridge interface</p>
             </div>
 
-            {/* MAC Address */}
-            <div>
-              <Label htmlFor="macAddress" className="text-foreground">
-                MAC Address
-              </Label>
-              <Input
-                id="macAddress"
-                placeholder="00:16:3e:7f:ae:93"
-                value={config.macAddress}
-                onChange={(e) => {
-                  setConfig({ ...config, macAddress: e.target.value });
-                  validateForm();
-                }}
-                className={`mt-1.5 bg-background border-input ${validationErrors.macAddress ? 'border-destructive' : ''}`}
-              />
-              {validationErrors.macAddress && (
-                <div className="flex items-center gap-1 mt-1 text-destructive text-xs">
-                  <AlertCircle className="w-3 h-3" />
-                  {validationErrors.macAddress}
-                </div>
-              )}
-              <p className="text-xs text-muted-foreground mt-1">Optional MAC address for the bridge</p>
-            </div>
+            {/* MAC Address - Hidden for AlmaLinux */}
+            {config.os !== 'almalinux' && (
+              <div>
+                <Label htmlFor="macAddress" className="text-foreground">
+                  MAC Address
+                </Label>
+                <Input
+                  id="macAddress"
+                  placeholder="00:16:3e:7f:ae:93"
+                  value={config.macAddress}
+                  onChange={(e) => {
+                    setConfig({ ...config, macAddress: e.target.value });
+                    validateForm();
+                  }}
+                  className={`mt-1.5 bg-background border-input ${validationErrors.macAddress ? 'border-destructive' : ''}`}
+                />
+                {validationErrors.macAddress && (
+                  <div className="flex items-center gap-1 mt-1 text-destructive text-xs">
+                    <AlertCircle className="w-3 h-3" />
+                    {validationErrors.macAddress}
+                  </div>
+                )}
+                <p className="text-xs text-muted-foreground mt-1">Optional MAC address for the bridge</p>
+              </div>
+            )}
 
             {/* IPv6 Toggle */}
             <div className="flex items-center justify-between p-4 bg-accent/10 rounded-lg border border-accent/20">
