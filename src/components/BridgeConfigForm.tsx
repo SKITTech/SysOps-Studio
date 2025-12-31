@@ -13,7 +13,6 @@ import { generateCommands } from "@/utils/commandGenerators";
 import { validateIPAddress, validateNetmask, cidrToNetmask, validateIPv6Address, validateMACAddress, validateInterfaceName, validateIPv6Prefix, validateDNSServers } from "@/utils/configParser";
 import { NetworkConfigParser } from "./NetworkConfigParser";
 import { CommandOutput } from "./CommandOutput";
-import { BridgeSampleCode } from "./BridgeSampleCode";
 
 export const BridgeConfigForm = () => {
   const [config, setConfig] = useState<NetworkConfig>({
@@ -234,11 +233,6 @@ export const BridgeConfigForm = () => {
                 </SelectContent>
               </Select>
               <p className="text-xs text-muted-foreground mt-1">Choose your server&apos;s operating system</p>
-              
-              {/* Live Sample Code Preview */}
-              <div className="mt-4">
-                <BridgeSampleCode config={config} />
-              </div>
             </div>
 
             {/* IP Address */}
