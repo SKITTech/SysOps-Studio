@@ -11,6 +11,7 @@ import FirewallGenerator from "./pages/FirewallGenerator";
 import LogAnalyzer from "./pages/LogAnalyzer";
 import SecurityAudit from "./pages/SecurityAudit";
 import CommandLibrary from "./pages/CommandLibrary";
+import DatabaseComparator from "./pages/DatabaseComparator";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/log-analyzer" element={<LogAnalyzer />} />
           <Route path="/security-audit" element={<SecurityAudit />} />
           <Route path="/command-library" element={<CommandLibrary />} />
+          <Route path="/database-comparator" element={<DatabaseComparator />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
