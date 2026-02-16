@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LucideIcon, Menu, X, Activity, Network, Wifi, Globe, Shield, FileText, ShieldAlert, Terminal } from "lucide-react";
+import { LucideIcon, Menu, X, Activity, Network, Wifi, Globe, Shield, FileText, ShieldAlert, Terminal, GitCompare } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface SidebarItem {
@@ -19,6 +19,7 @@ const navItems: SidebarItem[] = [
   { to: "/log-analyzer", icon: FileText, label: "Log Analyzer" },
   { to: "/security-audit", icon: ShieldAlert, label: "Security Audit" },
   { to: "/command-library", icon: Terminal, label: "Command Library" },
+  { to: "/database-comparator", icon: GitCompare, label: "DB Comparator" },
 ];
 
 interface SidebarProps {
