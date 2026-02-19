@@ -108,9 +108,31 @@ const LogAnalyzer = () => {
       return;
     }
 
+    if (searchTerm.length > 100) {
+      toast.error("Search pattern too long (max 100 characters)");
+      return;
+    }
+
+    let regex: RegExp;
+    try {
+      regex = new RegExp(searchTerm, "gi");
+    } catch {
+      toast.error("Invalid regex pattern");
+      return;
+    }
+
     const lines = logInput.split("\n");
-    const regex = new RegExp(searchTerm, "gi");
-    const matches = lines.filter(line => regex.test(line));
+    const matches: string[] = [];
+    for (const line of lines) {
+      try {
+        regex.lastIndex = 0;
+        if (regex.test(line)) {
+          matches.push(line);
+        }
+      } catch {
+        break;
+      }
+    }
 
     setFilteredLogs(matches.join("\n") || "No matches found");
     toast.success(`Found ${matches.length} matching lines`);
