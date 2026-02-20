@@ -1,15 +1,4 @@
 {
-<<<<<<< HEAD
-  "name": "SystemAdmin-tool",
-  "private": true,
-  "version": "0.0.0",
-  "scripts": {
-    "dev": "cd Linux-tools && npm run dev",
-    "build": "cd Linux-tools && npm run build",
-    "lint": "cd Linux-tools && npm run lint",
-    "preview": "cd Linux-tools && npm run preview",
-    "install-deps": "cd Linux-tools && npm install"
-=======
   "name": "vite_react_shadcn_ts",
   "private": true,
   "version": "0.0.0",
@@ -91,6 +80,5 @@
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.38.0",
     "vite": "^5.4.19"
->>>>>>> 6a607959629ad6170b0ff6118002460fbcdfcec7
   }
 }
