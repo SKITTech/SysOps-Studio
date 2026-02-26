@@ -1,10 +1,8 @@
-import React, { useState, useRef } from "react";
-import { Database, GitCompare, Copy, Check, AlertTriangle, CheckCircle, TableProperties, Upload } from "lucide-react";
+import { useState } from "react";
+import { Database, GitCompare, Copy, Check, AlertTriangle, CheckCircle, TableProperties } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
 import { Sidebar } from "@/components/Sidebar";
 import { toast } from "sonner";
 import { compareDatabases, TableDiff } from "@/utils/sqlComparator";
@@ -16,37 +14,13 @@ const DatabaseComparator = () => {
   const [hasCompared, setHasCompared] = useState(false);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [copiedAll, setCopiedAll] = useState(false);
-  const [includeMissingTables, setIncludeMissingTables] = useState(true);
-
-  const originalFileRef = useRef<HTMLInputElement>(null);
-  const errorFileRef = useRef<HTMLInputElement>(null);
-
-  const handleFileLoad = (setter: (val: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (!file.name.endsWith('.sql') && !file.name.endsWith('.txt')) {
-      toast.error("Please select a .sql or .txt file");
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const text = ev.target?.result as string;
-      setter(text);
-      toast.success(`Loaded: ${file.name}`);
-    };
-    reader.readAsText(file);
-    e.target.value = "";
-  };
 
   const handleCompare = () => {
     if (!originalSQL.trim() || !errorSQL.trim()) {
       toast.error("Please paste both database structures before comparing");
       return;
     }
-    let results = compareDatabases(originalSQL, errorSQL);
-    if (!includeMissingTables) {
-      results = results.filter(d => d.type !== 'missing_table');
-    }
+    const results = compareDatabases(originalSQL, errorSQL);
     setDiffs(results);
     setHasCompared(true);
     if (results.length === 0) {
@@ -95,8 +69,8 @@ const DatabaseComparator = () => {
         {/* Steps Guide */}
         <Card className="p-4 bg-accent/5 border-accent/20">
           <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-            <span className="flex items-center gap-1.5"><span className="w-5 h-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold">1</span> Paste or upload original structure</span>
-            <span className="flex items-center gap-1.5"><span className="w-5 h-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold">2</span> Paste or upload error structure</span>
+            <span className="flex items-center gap-1.5"><span className="w-5 h-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold">1</span> Paste original structure</span>
+            <span className="flex items-center gap-1.5"><span className="w-5 h-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold">2</span> Paste error structure</span>
             <span className="flex items-center gap-1.5"><span className="w-5 h-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold">3</span> Click Compare</span>
             <span className="flex items-center gap-1.5"><span className="w-5 h-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold">4</span> Copy & execute fix SQL</span>
           </div>
@@ -105,27 +79,9 @@ const DatabaseComparator = () => {
         {/* Input Areas */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <Card className="p-4 space-y-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Database className="w-4 h-4 text-success" />
-                <h2 className="font-semibold text-foreground text-sm">Original (Correct) Structure</h2>
-              </div>
-              <Button
-                size="sm"
-                variant="outline"
-                className="gap-1.5 text-xs"
-                onClick={() => originalFileRef.current?.click()}
-              >
-                <Upload className="w-3.5 h-3.5" />
-                Load .sql File
-              </Button>
-              <input
-                ref={originalFileRef}
-                type="file"
-                accept=".sql,.txt"
-                className="hidden"
-                onChange={handleFileLoad(setOriginalSQL)}
-              />
+            <div className="flex items-center gap-2">
+              <Database className="w-4 h-4 text-success" />
+              <h2 className="font-semibold text-foreground text-sm">Original (Correct) Structure</h2>
             </div>
             <Textarea
               placeholder="Paste your original/correct phpMyAdmin SQL export here...&#10;&#10;Example:&#10;CREATE TABLE `users` (&#10;  `id` int(11) NOT NULL AUTO_INCREMENT,&#10;  `name` varchar(255) NOT NULL,&#10;  PRIMARY KEY (`id`)&#10;) ENGINE=InnoDB;"
@@ -136,27 +92,9 @@ const DatabaseComparator = () => {
           </Card>
 
           <Card className="p-4 space-y-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-destructive" />
-                <h2 className="font-semibold text-foreground text-sm">Error / Incomplete Structure</h2>
-              </div>
-              <Button
-                size="sm"
-                variant="outline"
-                className="gap-1.5 text-xs"
-                onClick={() => errorFileRef.current?.click()}
-              >
-                <Upload className="w-3.5 h-3.5" />
-                Load .sql File
-              </Button>
-              <input
-                ref={errorFileRef}
-                type="file"
-                accept=".sql,.txt"
-                className="hidden"
-                onChange={handleFileLoad(setErrorSQL)}
-              />
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 text-destructive" />
+              <h2 className="font-semibold text-foreground text-sm">Error / Incomplete Structure</h2>
             </div>
             <Textarea
               placeholder="Paste your error/incomplete phpMyAdmin SQL export here...&#10;&#10;This is the database that needs to be fixed to match the original."
@@ -166,20 +104,6 @@ const DatabaseComparator = () => {
             />
           </Card>
         </div>
-
-        {/* Options */}
-        <Card className="p-4">
-          <div className="flex items-center gap-2">
-            <Checkbox
-              id="includeMissingTables"
-              checked={includeMissingTables}
-              onCheckedChange={(checked) => setIncludeMissingTables(checked === true)}
-            />
-            <Label htmlFor="includeMissingTables" className="text-sm cursor-pointer">
-              Include missing tables (generate CREATE TABLE for tables not found in error database)
-            </Label>
-          </div>
-        </Card>
 
         {/* Action Buttons */}
         <div className="flex gap-3">
