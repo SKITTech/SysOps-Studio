@@ -190,15 +190,24 @@ export const BridgeConfigForm = () => {
     setConfig({ ...config, ...updates });
   };
 
+  const getCommandSections = () => {
+    const commands = generateCommands(config);
+    const marker = '---DNS_SECTION---';
+    if (commands.includes(marker)) {
+      const [bridge, dns] = commands.split(marker);
+      return { bridge: bridge.trimEnd(), dns: dns.trim() };
+    }
+    return { bridge: commands, dns: '' };
+  };
+
   const handleCopy = async () => {
     if (!validateForm()) {
       toast.error("Please fix validation errors first");
       return;
     }
 
-    const commands = generateCommands(config);
-    // Filter out comment lines (lines starting with #)
-    const commandsWithoutComments = commands
+    const { bridge } = getCommandSections();
+    const commandsWithoutComments = bridge
       .split('\n')
       .filter(line => !line.trim().startsWith('#'))
       .join('\n')
@@ -206,8 +215,28 @@ export const BridgeConfigForm = () => {
     
     await navigator.clipboard.writeText(commandsWithoutComments);
     setCopied(true);
-    toast.success("Commands copied to clipboard!");
+    toast.success("Bridge commands copied to clipboard!");
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const [dnsCopied, setDnsCopied] = useState(false);
+  const handleCopyDns = async () => {
+    if (!validateForm()) {
+      toast.error("Please fix validation errors first");
+      return;
+    }
+
+    const { dns } = getCommandSections();
+    const commandsWithoutComments = dns
+      .split('\n')
+      .filter(line => !line.trim().startsWith('#'))
+      .join('\n')
+      .trim();
+    
+    await navigator.clipboard.writeText(commandsWithoutComments);
+    setDnsCopied(true);
+    toast.success("DNS commands copied to clipboard!");
+    setTimeout(() => setDnsCopied(false), 2000);
   };
 
   const handleDownload = () => {
@@ -732,14 +761,14 @@ export const BridgeConfigForm = () => {
         {/* Output Panel */}
         <Card className="p-6 bg-terminal-bg border-terminal-border h-fit sticky top-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-terminal-text">Generated Commands</h2>
+            <h2 className="text-lg font-semibold text-terminal-text">Bridge Commands</h2>
             <div className="flex gap-2">
               <Button
                 size="sm"
                 variant="outline"
                 onClick={handleCopy}
                 className="bg-terminal-bg hover:bg-terminal-border border-terminal-border text-terminal-text"
-                title="Copy all commands"
+                title="Copy bridge commands"
               >
                 {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                 <span className="ml-1 text-xs">All</span>
@@ -755,9 +784,30 @@ export const BridgeConfigForm = () => {
             </div>
           </div>
           
-          <div className="bg-terminal-bg border border-terminal-border rounded-md p-4 min-h-[600px] max-h-[800px] overflow-y-auto">
-            <CommandOutput commands={generateCommands(config)} />
+          <div className="bg-terminal-bg border border-terminal-border rounded-md p-4 min-h-[400px] max-h-[600px] overflow-y-auto">
+            <CommandOutput commands={getCommandSections().bridge} />
           </div>
+
+          {getCommandSections().dns && (
+            <>
+              <div className="flex items-center justify-between mt-6 mb-4">
+                <h2 className="text-lg font-semibold text-terminal-text">Preserve DNS Settings</h2>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={handleCopyDns}
+                  className="bg-terminal-bg hover:bg-terminal-border border-terminal-border text-terminal-text"
+                  title="Copy DNS commands"
+                >
+                  {dnsCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                  <span className="ml-1 text-xs">Copy</span>
+                </Button>
+              </div>
+              <div className="bg-terminal-bg border border-terminal-border rounded-md p-4 overflow-y-auto">
+                <CommandOutput commands={getCommandSections().dns} />
+              </div>
+            </>
+          )}
         </Card>
       </div>
     </div>
