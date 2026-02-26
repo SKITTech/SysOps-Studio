@@ -14,14 +14,10 @@ import { validateIPAddress, validateNetmask, cidrToNetmask, validateIPv6Address,
 import { NetworkConfigParser } from "./NetworkConfigParser";
 import { CommandOutput } from "./CommandOutput";
 
-const EXAMPLE_CONFIG: NetworkConfig = {
-  ipAddress: "192.168.1.100",
+const BASE_EXAMPLE = {
   netmask: "255.255.255.0",
   bridgeName: "viifbr0",
-  interfaces: "enp0s31f6",
-  gateway: "192.168.1.1",
   dns: "8.8.8.8, 8.8.4.4",
-  os: "ubuntu-18.04-hetzner",
   macAddress: "00:16:3e:7f:ae:93",
   enableIPv6: true,
   ipv6Address: "2001:db8::100",
@@ -29,10 +25,10 @@ const EXAMPLE_CONFIG: NetworkConfig = {
   ipv6Prefix: "64",
   enableBonding: false,
   bondName: "bond0",
-  bondMode: "mode-1",
+  bondMode: "mode-1" as const,
   bondSlaves: "",
-   useGoogleDNSv4: true,
-   useGoogleDNSv6: false,
+  useGoogleDNSv4: true,
+  useGoogleDNSv6: false,
   useCloudflareDNSv4: false,
   useCloudflareDNSv6: false,
   useOpenDNSv4: false,
@@ -41,6 +37,40 @@ const EXAMPLE_CONFIG: NetworkConfig = {
   useQuad9DNSv6: false,
   extraRoute: "",
 };
+
+const EXAMPLE_CONFIGS: Record<string, Partial<NetworkConfig>> = {
+  "centos-7": {
+    ipAddress: "192.168.1.100",
+    interfaces: "eth0",
+    gateway: "192.168.1.1",
+  },
+  "almalinux": {
+    ipAddress: "192.168.1.100",
+    interfaces: "eno1",
+    gateway: "192.168.1.1",
+  },
+  "ubuntu-16.04": {
+    ipAddress: "192.168.1.100",
+    interfaces: "eth0",
+    gateway: "192.168.1.1",
+  },
+  "ubuntu-18.04-hetzner": {
+    ipAddress: "192.168.1.100",
+    interfaces: "enp0s31f6",
+    gateway: "192.168.1.1",
+  },
+  "ubuntu-18.04-other": {
+    ipAddress: "10.1.3.43",
+    interfaces: "ens3",
+    gateway: "10.1.3.1",
+  },
+};
+
+const getExampleConfig = (os: string): NetworkConfig => ({
+  ...BASE_EXAMPLE,
+  ...EXAMPLE_CONFIGS[os] || EXAMPLE_CONFIGS["ubuntu-18.04-hetzner"],
+  os: os as NetworkConfig["os"],
+} as NetworkConfig);
 
 export const BridgeConfigForm = () => {
   const [config, setConfig] = useState<NetworkConfig>({
@@ -275,7 +305,7 @@ export const BridgeConfigForm = () => {
               variant="outline"
               size="sm"
               onClick={() => {
-                setConfig(EXAMPLE_CONFIG);
+                setConfig(getExampleConfig(config.os));
                 setValidationErrors({});
                 toast.success("Example configuration loaded — edit values as needed");
               }}
