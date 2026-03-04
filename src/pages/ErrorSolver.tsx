@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, CheckCircle, Copy, ExternalLink, Loader2, Terminal, Search, BookOpen, Lightbulb } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 interface SolutionStep {
   step: number;
@@ -29,10 +30,17 @@ interface SolutionData {
   rawResponse?: string;
 }
 
+const products = [
+  { id: "virtualizor", label: "Virtualizor", description: "KVM/OpenVZ/LXC virtualization panel" },
+  { id: "softaculous", label: "Softaculous", description: "Auto-installer for web apps" },
+  { id: "webuzo", label: "Webuzo", description: "Single server hosting panel" },
+];
+
 const ErrorSolver = () => {
   const [errorInput, setErrorInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [solution, setSolution] = useState<SolutionData | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState("virtualizor");
   const { toast } = useToast();
 
   const handleSubmit = async () => {
@@ -46,7 +54,7 @@ const ErrorSolver = () => {
 
     try {
       const { data, error } = await supabase.functions.invoke("error-solver", {
-        body: { errorMessage: errorInput.trim() },
+        body: { errorMessage: errorInput.trim(), product: selectedProduct },
       });
 
       if (error) throw error;
@@ -79,9 +87,23 @@ const ErrorSolver = () => {
             Error Solver
           </h1>
           <p className="text-muted-foreground mt-1">
-            AI-powered Virtualizor error diagnosis and troubleshooting
+            AI-powered error diagnosis for Virtualizor, Softaculous & Webuzo
           </p>
         </div>
+
+        {/* Product Tabs */}
+        <Tabs value={selectedProduct} onValueChange={setSelectedProduct}>
+          <TabsList className="w-full sm:w-auto">
+            {products.map((p) => (
+              <TabsTrigger key={p.id} value={p.id} className="text-xs sm:text-sm">
+                {p.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          <p className="text-xs text-muted-foreground mt-1.5">
+            {products.find((p) => p.id === selectedProduct)?.description}
+          </p>
+        </Tabs>
 
         {/* Input */}
         <Card>
@@ -91,14 +113,20 @@ const ErrorSolver = () => {
               Describe Your Error
             </CardTitle>
             <CardDescription>
-              Paste the error message, error code, or describe the issue you're facing with Virtualizor
+              Paste the error message, error code, or describe the issue you're facing with {products.find((p) => p.id === selectedProduct)?.label}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <Textarea
               value={errorInput}
               onChange={(e) => setErrorInput(e.target.value)}
-              placeholder="e.g. 'Failed to create VPS: Could not find the storage' or 'Error Code 1024' or 'KVM VPS not starting after migration'"
+              placeholder={
+                selectedProduct === "virtualizor"
+                  ? "e.g. 'Failed to create VPS: Could not find the storage' or 'KVM VPS not starting after migration'"
+                  : selectedProduct === "softaculous"
+                  ? "e.g. 'WordPress installation failed' or 'Backup creation error' or 'License activation failed'"
+                  : "e.g. 'Apache not starting' or 'SSL certificate error' or 'DNS zone not loading'"
+              }
               className="min-h-[120px] font-mono text-sm"
             />
             <Button onClick={handleSubmit} disabled={isLoading || !errorInput.trim()} className="w-full sm:w-auto">
