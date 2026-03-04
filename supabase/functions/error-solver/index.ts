@@ -9,7 +9,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { errorMessage } = await req.json();
+    const { errorMessage, product } = await req.json();
     if (!errorMessage) {
       return new Response(JSON.stringify({ error: "Error message is required" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -19,29 +19,52 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    const systemPrompt = `You are an expert Virtualizor system administrator and troubleshooting specialist. 
+    const productContext: Record<string, string> = {
+      virtualizor: `You are an expert Virtualizor system administrator and troubleshooting specialist.
 Your job is to help users diagnose and fix Virtualizor-related errors.
-
 When given an error message or error code, you must:
-1. Search your knowledge of the official Virtualizor documentation (https://virtualizor.com/docs/) 
+1. Search your knowledge of the official Virtualizor documentation (https://virtualizor.com/docs/)
 2. Consider common Virtualizor issues related to KVM, OpenVZ, LXC, Xen virtualization
 3. Consider server configuration, networking, storage, and panel-related issues
+Always prioritize official Virtualizor documentation references (https://virtualizor.com/docs/). Include relevant CLI commands, config file paths, and panel navigation steps.`,
+
+      softaculous: `You are an expert Softaculous system administrator and troubleshooting specialist.
+Your job is to help users diagnose and fix Softaculous-related errors including auto-installer issues, script installations, backup/restore problems, and panel integration issues.
+When given an error message or error code, you must:
+1. Search your knowledge of the official Softaculous documentation (https://www.softaculous.com/docs/)
+2. Consider common issues with script installations (WordPress, Joomla, etc.), cPanel/Plesk/DirectAdmin integration, backup failures, cron jobs, and licensing
+3. Consider PHP version compatibility, file permissions, database connection issues, and server configuration
+Always prioritize official Softaculous documentation references (https://www.softaculous.com/docs/). Include relevant CLI commands, config file paths, and panel navigation steps.`,
+
+      webuzo: `You are an expert Webuzo system administrator and troubleshooting specialist.
+Your job is to help users diagnose and fix Webuzo-related errors including server management, application deployment, and hosting panel issues.
+When given an error message or error code, you must:
+1. Search your knowledge of the official Webuzo documentation (https://www.webuzo.com/docs/)
+2. Consider common issues with single-server management, LAMP/LEMP stack, DNS, email, FTP, and application installations
+3. Consider server configuration, SSL certificates, firewall rules, and service management
+Always prioritize official Webuzo documentation references (https://www.webuzo.com/docs/). Include relevant CLI commands, config file paths, and panel navigation steps.`,
+    };
+
+    const selectedProduct = product && productContext[product] ? product : "virtualizor";
+    const productPrompt = productContext[selectedProduct];
+
+    const systemPrompt = `${productPrompt}
 
 Respond in this EXACT JSON format (no markdown wrapping, pure JSON):
 {
-  "errorExplanation": "Clear explanation of what this error means in the context of Virtualizor",
+  "errorExplanation": "Clear explanation of what this error means",
   "possibleCauses": ["cause 1", "cause 2", "cause 3"],
   "stepByStepFix": [
     {"step": 1, "title": "Step title", "description": "Detailed description", "command": "optional command to run"},
     {"step": 2, "title": "Step title", "description": "Detailed description", "command": ""}
   ],
   "references": [
-    {"title": "Reference title", "url": "https://virtualizor.com/docs/relevant-page"}
+    {"title": "Reference title", "url": "https://relevant-docs-url"}
   ],
   "additionalNotes": "Any extra tips or warnings"
 }
 
-Always prioritize official Virtualizor documentation references. Include relevant CLI commands, config file paths, and panel navigation steps. If the error is not Virtualizor-specific, still try to provide context about how it relates to a Virtualizor environment.`;
+If the error is not specific to the selected product, still try to provide context about how it relates to the environment.`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -53,7 +76,7 @@ Always prioritize official Virtualizor documentation references. Include relevan
         model: "google/gemini-3-flash-preview",
         messages: [
           { role: "system", content: systemPrompt },
-          { role: "user", content: `Diagnose and provide a fix for this Virtualizor error:\n\n${errorMessage}` },
+          { role: "user", content: `Diagnose and provide a fix for this error:\n\n${errorMessage}` },
         ],
       }),
     });
