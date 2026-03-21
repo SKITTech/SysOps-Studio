@@ -11,7 +11,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "@/hooks/use-toast";
 import {
   FileText, Upload, Copy, Download, Trash2, ArrowLeftRight,
-  Plus, Minus, Equal, Eye, Code, AlignLeft, RotateCcw
+  Plus, Minus, Equal, Eye, Code, AlignLeft
 } from "lucide-react";
 
 interface DiffLine {
