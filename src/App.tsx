@@ -35,7 +35,7 @@ const App = () => (
             <Route path="/ipv6-converter" element={<IPv6Converter />} />
             <Route path="/firewall-generator" element={<FirewallGenerator />} />
             <Route path="/log-analyzer" element={<LogAnalyzer />} />
-            <Route path="/security-audit" element={<SecurityAudit />} />
+            
             <Route path="/command-library" element={<CommandLibrary />} />
             <Route path="/database-comparator" element={<DatabaseComparator />} />
             <Route path="/error-solver" element={<ErrorSolver />} />

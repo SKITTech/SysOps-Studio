@@ -20,7 +20,7 @@ const navItems: SidebarItem[] = [
   { to: "/ipv6-converter", icon: Globe, label: "IPv6 Converter" },
   { to: "/firewall-generator", icon: Shield, label: "Firewall Generator" },
   { to: "/log-analyzer", icon: FileText, label: "Log Analyzer" },
-  { to: "/security-audit", icon: ShieldAlert, label: "Security Audit" },
+  
   { to: "/command-library", icon: Terminal, label: "Command Library" },
   { to: "/database-comparator", icon: GitCompare, label: "DB Comparator" },
   { to: "/error-solver", icon: AlertTriangle, label: "Error Solver" },

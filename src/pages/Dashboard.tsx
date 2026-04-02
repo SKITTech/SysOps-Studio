@@ -16,7 +16,7 @@ const tools = [
   { to: "/ipv6-converter", icon: Globe, label: "IPv6 Converter", desc: "Convert between IPv4 and IPv6 formats", color: "from-primary/20 to-primary/5" },
   { to: "/firewall-generator", icon: Shield, label: "Firewall Generator", desc: "Create iptables and firewall rules", color: "from-destructive/20 to-destructive/5" },
   { to: "/log-analyzer", icon: FileText, label: "Log Analyzer", desc: "Parse and analyze system log files", color: "from-accent/20 to-accent/5" },
-  { to: "/security-audit", icon: ShieldAlert, label: "Security Audit", desc: "Audit server security configurations", color: "from-destructive/20 to-destructive/5" },
+  
   { to: "/command-library", icon: Terminal, label: "Command Library", desc: "Browse common sysadmin commands", color: "from-success/20 to-success/5" },
   { to: "/database-comparator", icon: GitCompare, label: "DB Comparator", desc: "Compare database structures & generate fix SQL", color: "from-primary/20 to-primary/5" },
   { to: "/error-solver", icon: AlertTriangle, label: "Error Solver", desc: "AI-powered error diagnosis and solutions", color: "from-destructive/20 to-destructive/5" },
