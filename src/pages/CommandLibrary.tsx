@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
-import { Terminal, Search, Copy, Check, ChevronRight, Zap, BookOpen, Tag, ArrowRight, Loader2, Sparkles, Clock, Star, Shield, AlertTriangle, Info } from "lucide-react";
+import { Terminal, Search, Copy, Check, Zap, BookOpen, Tag, ArrowRight, Loader2, Sparkles, Clock, Star, AlertTriangle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
