@@ -722,11 +722,7 @@ const CommandLibrary = () => {
         </header>
 
         <main className="container mx-auto px-6 py-6 space-y-6">
-          <Tabs defaultValue="browse" className="w-full">
-            <TabsList className="w-full max-w-md">
-              <TabsTrigger value="browse" className="flex-1 gap-2"><BookOpen className="w-4 h-4" /> Browse & Search</TabsTrigger>
-              <TabsTrigger value="ai" className="flex-1 gap-2"><Sparkles className="w-4 h-4" /> AI Command Finder</TabsTrigger>
-            </TabsList>
+          <div className="w-full">
 
             {/* ─── Browse Tab ─── */}
             <TabsContent value="browse" className="mt-6 space-y-6">
