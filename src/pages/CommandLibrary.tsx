@@ -722,10 +722,7 @@ const CommandLibrary = () => {
         </header>
 
         <main className="container mx-auto px-6 py-6 space-y-6">
-          <div className="w-full">
-
-            {/* ─── Browse Tab ─── */}
-            <TabsContent value="browse" className="mt-6 space-y-6">
+          <div className="w-full space-y-6">
               {/* Search */}
               <div className="relative">
                 <div className="flex gap-2">
