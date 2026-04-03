@@ -651,14 +651,31 @@ const CommandLibrary = () => {
     });
   }, []);
 
-  const handleSearch = useCallback(() => {
+  const handleSearch = useCallback(async () => {
     const q = searchQuery.toLowerCase().trim();
+    if (!q) return;
     if (commandDatabase[q]) {
       selectCommand(commandDatabase[q]);
     } else if (filteredCommands.length === 1) {
       selectCommand(filteredCommands[0]);
-    } else {
-      toast.error(`Command "${searchQuery}" not found. Try the AI Command Finder!`);
+    } else if (filteredCommands.length === 0) {
+      // Auto-fallback to AI Command Finder
+      setAiQuery(searchQuery);
+      setAiLoading(true);
+      setAiResult(null);
+      setSelectedCommand(null);
+      try {
+        const { data, error } = await supabase.functions.invoke("command-finder", {
+          body: { query: searchQuery },
+        });
+        if (error) throw error;
+        setAiResult(data);
+        toast.success("Command not in local database — AI found a result!");
+      } catch (err: any) {
+        toast.error("AI search failed: " + (err.message || "Unknown error"));
+      } finally {
+        setAiLoading(false);
+      }
     }
   }, [searchQuery, filteredCommands, selectCommand]);
 
