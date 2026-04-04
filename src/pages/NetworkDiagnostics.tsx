@@ -623,6 +623,40 @@ const NetworkDiagnostics = () => {
           </ResultPanel>
         );
 
+      case 'ip-geolocation':
+        return (
+          <ResultPanel title={`geolocate ${data.ip}`} onCopy={JSON.stringify(data, null, 2)}>
+            {data.error ? (
+              <p className="text-destructive">{data.error}</p>
+            ) : (
+              <div className="space-y-4">
+                <div className="grid sm:grid-cols-2 gap-x-8 gap-y-2">
+                  <div className="flex gap-3"><span className="text-muted-foreground w-28">IP Address:</span><span className="text-accent font-bold">{data.ip}</span></div>
+                  <div className="flex gap-3"><span className="text-muted-foreground w-28">Continent:</span><span>{data.continent}</span></div>
+                  <div className="flex gap-3"><span className="text-muted-foreground w-28">Country:</span><span>{data.country} {data.countryCode ? `(${data.countryCode})` : ''}</span></div>
+                  <div className="flex gap-3"><span className="text-muted-foreground w-28">Region:</span><span>{data.region} {data.regionCode ? `(${data.regionCode})` : ''}</span></div>
+                  <div className="flex gap-3"><span className="text-muted-foreground w-28">City:</span><span>{data.city}</span></div>
+                  <div className="flex gap-3"><span className="text-muted-foreground w-28">ZIP Code:</span><span>{data.zip}</span></div>
+                  <div className="flex gap-3"><span className="text-muted-foreground w-28">Latitude:</span><span>{data.lat}</span></div>
+                  <div className="flex gap-3"><span className="text-muted-foreground w-28">Longitude:</span><span>{data.lon}</span></div>
+                  <div className="flex gap-3"><span className="text-muted-foreground w-28">Timezone:</span><span>{data.timezone}</span></div>
+                  <div className="flex gap-3"><span className="text-muted-foreground w-28">Currency:</span><span>{data.currency}</span></div>
+                  <div className="flex gap-3"><span className="text-muted-foreground w-28">ISP:</span><span>{data.isp}</span></div>
+                  <div className="flex gap-3"><span className="text-muted-foreground w-28">Organization:</span><span>{data.org}</span></div>
+                  <div className="flex gap-3"><span className="text-muted-foreground w-28">AS Number:</span><span>{data.as}</span></div>
+                  {data.reverse && <div className="flex gap-3"><span className="text-muted-foreground w-28">Reverse DNS:</span><span>{data.reverse}</span></div>}
+                </div>
+                <div className="flex flex-wrap gap-2 pt-2 border-t border-[hsl(var(--terminal-border))]">
+                  {data.mobile && <Badge variant="secondary" className="text-xs">📱 Mobile</Badge>}
+                  {data.proxy && <Badge className="bg-destructive text-destructive-foreground text-xs">🛡️ Proxy/VPN</Badge>}
+                  {data.hosting && <Badge variant="secondary" className="text-xs">☁️ Hosting/DC</Badge>}
+                  {!data.mobile && !data.proxy && !data.hosting && <Badge className="bg-[hsl(var(--success))] text-[hsl(var(--success-foreground))] text-xs">✓ Residential</Badge>}
+                </div>
+              </div>
+            )}
+          </ResultPanel>
+        );
+
       default: return null;
     }
   };
