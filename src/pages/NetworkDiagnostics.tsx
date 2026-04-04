@@ -272,6 +272,20 @@ const NetworkDiagnostics = () => {
     finally { setLoading(false); }
   };
 
+  const runIPGeolocation = async () => {
+    if (!ipInput.trim()) { toast.error("Enter an IP address"); return; }
+    setLoading(true); resetResults();
+    try {
+      const { data, error } = await supabase.functions.invoke('network-tools', {
+        body: { tool: 'ip-geolocation', ip: ipInput.trim() },
+      });
+      if (error) throw error;
+      setResult({ type: 'ip-geolocation', data });
+      toast.success(`Geolocation found for ${data.ip}`);
+    } catch (err: any) { toast.error(err.message || "Geolocation failed"); }
+    finally { setLoading(false); }
+  };
+
   /* ─── Tool Forms ─── */
   const renderToolForm = () => {
     const tool = TOOLS.find(t => t.id === activeTool);
