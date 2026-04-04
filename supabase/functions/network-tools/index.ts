@@ -26,6 +26,8 @@ serve(async (req) => {
         return handleWhois(params);
       case 'ssl-check':
         return handleSSLCheck(params);
+      case 'ip-geolocation':
+        return handleIPGeolocation(params);
       default:
         return json({ error: `Unknown tool: ${tool}` }, 400);
     }
