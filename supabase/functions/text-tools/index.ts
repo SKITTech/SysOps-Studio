@@ -27,8 +27,23 @@ async function callAI(apiKey: string, systemPrompt: string, userText: string) {
 
   const data = await response.json();
   const content = data.choices?.[0]?.message?.content || "";
-  const cleaned = content.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-  return JSON.parse(cleaned);
+  let cleaned = content.replace(/```json\s*/gi, "").replace(/```\s*/g, "").trim();
+
+  const jsonStart = cleaned.search(/[\{\[]/);
+  const startChar = jsonStart !== -1 ? cleaned[jsonStart] : '{';
+  const jsonEnd = cleaned.lastIndexOf(startChar === '[' ? ']' : '}');
+
+  if (jsonStart === -1 || jsonEnd === -1) throw new Error("No JSON found in AI response");
+  cleaned = cleaned.substring(jsonStart, jsonEnd + 1);
+
+  try {
+    return JSON.parse(cleaned);
+  } catch {
+    cleaned = cleaned
+      .replace(/,\s*}/g, "}").replace(/,\s*]/g, "]")
+      .replace(/[\x00-\x1F\x7F]/g, "");
+    return JSON.parse(cleaned);
+  }
 }
 
 serve(async (req) => {
